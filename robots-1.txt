@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hajwaned4-droid.github.io/Velvora-Watche/sitemap.xml
