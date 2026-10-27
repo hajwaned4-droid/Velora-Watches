@@ -257,15 +257,36 @@ function closeLb(){$("#lb").classList.remove("show")}
 /* ============ Catalogue ============ */
 const F={q:"",min:"",max:"",sort:"def",cat:"All",shown:PAGE};let curList=[];
 function matchQ(p,q){if(!q)return true;const t=q.toLowerCase().replace(/#/g,"").trim();if(!t)return true;if(/^\d+$/.test(t))return p.id===+t;const hay=(p.name+" "+pid(p)).toLowerCase();return t.split(/\s+/).every(w=>/^\d+$/.test(w)?p.id===+w:hay.includes(w))}
-function filtered(){const mn=F.min===""?-1:+F.min,mx=F.max===""?Infinity:+F.max;let l=productsData.filter(p=>matchQ(p,F.q)&&(F.cat==="All"||p.category===F.cat)&&p.price>=mn&&p.price<=mx);
- const cmpN=(a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true});
- const S={def:(a,b)=>a.id-b.id,pa:(a,b)=>a.price-b.price||a.id-b.id,pd:(a,b)=>b.price-a.price||a.id-b.id,na:cmpN,nd:(a,b)=>cmpN(b,a)};return l.sort(S[F.sort]||S.def)}
+function filtered(){
+ // Treat empty controls as unset and compare numeric values defensively.
+ const mn=String(F.min).trim()===""?-Infinity:Number(F.min);
+ const mx=String(F.max).trim()===""?Infinity:Number(F.max);
+ const query=String(F.q||"").trim();
+ const category=String(F.cat||"All").trim();
+ let l=productsData.filter(p=>{
+   const price=Number(p.price);
+   const categoryMatch=category==="All"||String(p.category||"All").trim().toLowerCase()===category.toLowerCase();
+   const priceMatch=Number.isFinite(price)&&price>=mn&&price<=mx;
+   return matchQ(p,query)&&categoryMatch&&priceMatch;
+ });
+ const cmpN=(a,b)=>String(a.name||"").localeCompare(String(b.name||""),undefined,{numeric:true});
+ const S={def:(a,b)=>a.id-b.id,pa:(a,b)=>Number(a.price)-Number(b.price)||a.id-b.id,pd:(a,b)=>Number(b.price)-Number(a.price)||a.id-b.id,na:cmpN,nd:(a,b)=>cmpN(b,a)};
+ return l.sort(S[F.sort]||S.def);
+}
 const BANDS=[[0,1500,"Up to ₹1,500"],[1501,1800,"₹1,501 – ₹1,800"],[1801,2000,"₹1,801 – ₹2,000"],[2001,1e9,"Above ₹2,000"]].filter(b=>productsData.some(p=>p.price>=b[0]&&p.price<=b[1]));
 function renderChips(){const cc=$("#catChips");cc.innerHTML=hasCats?["All",...cats].map(c=>`<button class="chip ${F.cat===c?"active":""}" data-act="cat" data-v="${esc(c)}" aria-pressed="${F.cat===c}">${c==="All"?"All Watches":esc(c)}</button>`).join(""):"";
  $("#priceChips").innerHTML=BANDS.map(b=>{const on=+F.min===b[0]&&F.min!==""&&(b[1]===1e9?F.max==="":+F.max===b[1]);return `<button class="chip ${on?"active":""}" data-act="band" data-lo="${b[0]}" data-hi="${b[1]}" aria-pressed="${on}">${b[2]}</button>`}).join("")}
-function renderCatalog(reset=true){if(reset)F.shown=PAGE;curList=filtered();const n=curList.length,g=$("#grid");g.innerHTML=curList.slice(0,F.shown).map(card).join("");
+function renderCatalog(reset=true){
+ if(reset)F.shown=PAGE;
+ curList=filtered();
+ // If no filters are active, never leave the catalogue blank when products are present.
+ const noFilters=!String(F.q||"").trim()&&String(F.min).trim()===""&&String(F.max).trim()===""&&(!F.cat||F.cat==="All");
+ if(!curList.length&&noFilters&&Array.isArray(productsData)&&productsData.length){
+   curList=productsData.slice().sort((a,b)=>a.id-b.id);
+ }
+ const n=curList.length,g=$("#grid");g.innerHTML=curList.slice(0,F.shown).map(card).join("");
  $("#count").textContent=n?`Showing ${Math.min(F.shown,n)} of ${n} watch${n>1?"es":""}${n<productsData.length?` (filtered from ${productsData.length})`:""}`:"";
- const e=$("#emptyS");e.hidden=n>0;if(!n){const bad=F.min!==""&&F.max!==""&&+F.min>+F.max;e.innerHTML=`<h3>No watches found</h3><p>${bad?"Your minimum price is higher than your maximum price.":F.q?`Nothing matches “${esc(F.q)}”. Try a shorter name or a product ID such as 12.`:"No watches match these filters."}</p><button class="btn gold" data-act="reset">RESET FILTERS</button> <button class="btn wa" data-act="chatwa">ASK US ON WHATSAPP</button>`}
+ const e=$("#emptyS");e.hidden=n>0;if(!n){const bad=F.min!==""&&F.max!==""&&+F.min>+F.max;e.innerHTML=`<h3>${productsData.length?"No watches found":"Catalogue is temporarily unavailable"}</h3><p>${!productsData.length?"The product list could not be loaded. Please refresh the page or contact the store.":bad?"Your minimum price is higher than your maximum price.":F.q?`Nothing matches “${esc(F.q)}”. Try a shorter name or a product ID such as 12.`:"No watches match these filters."}</p><button class="btn gold" data-act="reset">RESET FILTERS</button> <button class="btn wa" data-act="chatwa">ASK US ON WHATSAPP</button>`}
  $("#moreBtn").hidden=F.shown>=n;renderChips()}
 let dT;const later=()=>{clearTimeout(dT);dT=setTimeout(renderCatalog,140)};
 function resetFilters(){Object.assign(F,{q:"",min:"",max:"",sort:"def",cat:"All"});$("#q").value="";$("#minP").value="";$("#maxP").value="";$("#sort").value="def";renderCatalog()}
@@ -395,4 +416,4 @@ $("#featRail").innerHTML=featured().map(card).join("");
 renderRecent();renderCatalog();$("#cc").textContent=cartCount();$("#wc").textContent=wish.length;route();
 </script>
 </body>
-</html>
+                                                                 </html>
