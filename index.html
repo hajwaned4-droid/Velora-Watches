@@ -4,7 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#080808">
-<meta name="description" content="VELORA WATCHES — browse the watch collection, save favourites and order through WhatsApp.">
+<meta name="description" content="Explore the VELORA WATCHES collection, compare watch styles and prices, save favourites, and ask about availability or ordering through WhatsApp.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://hajwaned4-droid.github.io/Velvora-Watche/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VELORA WATCHES">
+<meta property="og:title" content="VELORA WATCHES | Timeless Luxury">
+<meta property="og:description" content="Explore the VELORA WATCHES collection, compare watch styles and prices, save favourites, and ask about availability or ordering through WhatsApp.">
+<meta property="og:url" content="https://hajwaned4-droid.github.io/Velvora-Watche/">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VELORA WATCHES | Timeless Luxury">
+<meta name="twitter:description" content="Explore the VELORA WATCHES collection, compare watch styles and prices, save favourites, and ask about availability or ordering through WhatsApp.">
+<script type="application/ld+json" id="websiteStructuredData">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "VELORA WATCHES",
+  "url": "https://hajwaned4-droid.github.io/Velvora-Watche/",
+  "description": "Explore watches, compare listed prices, save favourites, and contact the seller through WhatsApp.",
+  "inLanguage": "en-IN"
+}</script>
 <title>VELORA WATCHES | Timeless Luxury</title>
 <style>
 :root{--bg:#080808;--panel:#111;--gold:#d6b36a;--gold2:#f1d99a;--muted:#aaa;--line:rgba(214,179,106,.24);--white:#f8f5ee;--red:#ff6b7d;--serif:Georgia,"Times New Roman",serif}
@@ -356,15 +375,43 @@ function submitOrder(e){e.preventDefault();const g=i=>$("#"+i).value.trim(),err=
 let curView="home",trail=[],scrollMap={},restoring=false,curKey="";
 const HOME_KEYS=["#/","#/shop","#/story","#/support"];
 function showView(n){curView=n;["home","product","wishlist","checkout"].forEach(x=>{const el=$("#v-"+x);el.hidden=x!==n;if(x===n){el.style.animation="none";el.offsetWidth;el.style.animation=""}});document.body.dataset.view=n;$("#navlinks").classList.remove("open");$("#menuBtn").setAttribute("aria-expanded","false")}
+function updateSeoMeta(title, description){
+ document.title=title;
+ const put=(selector,value)=>{const el=document.querySelector(selector);if(el)el.setAttribute("content",value)};
+ put('meta[name="description"]',description);
+ put('meta[property="og:title"]',title);
+ put('meta[property="og:description"]',description);
+ put('meta[property="og:url"]',location.href.split("#")[0]+(location.hash||"#/"));
+ put('meta[name="twitter:title"]',title);
+ put('meta[name="twitter:description"]',description);
+}
+const HOME_SEO_DESCRIPTION="Explore the VELORA WATCHES collection, compare watch styles and prices, save favourites, and ask about availability or ordering through WhatsApp.";
 function route(){const raw=location.hash||"#/",[r,a,b]=raw.replace(/^#\/?/,"").split("/");let key=raw==="#"?"#/":raw;
  let back=false;const ix=trail.lastIndexOf(key);if(ix>=0&&ix<trail.length-1){trail.length=ix+1;back=true}else if(trail[trail.length-1]!==key){trail.push(key);if(trail.length>60)trail.shift()}
  restoring=true;curKey=key;closeCart();closeLb();
  let anchor=null;
- if(r==="product"){showView("product");renderProduct(+a)}
- else if(r==="wishlist"){showView("wishlist");renderWishlist();document.title="My Wishlist | VELORA WATCHES"}
- else if(r==="checkout"){co={mode:"cart",id:0,qty:1};showView("checkout");renderCheckout()}
- else if(r==="buy"){co={mode:"buy",id:+a,qty:clampQ(b)};showView("checkout");renderCheckout()}
- else{showView("home");document.title="VELORA WATCHES | Timeless Luxury";anchor={shop:"shop",story:"story",support:"support"}[r]||null}
+ if(r==="product"){
+  showView("product");renderProduct(+a);
+  const p=byId.get(+a);
+  updateSeoMeta(p?p.name+" | VELORA WATCHES":"Watch not found | VELORA WATCHES",p?`${p.name}: view listed price and product details, then contact VELORA WATCHES on WhatsApp to confirm availability, payment and delivery.`:"This watch link could not be found. Browse the VELORA WATCHES collection.");
+ }
+ else if(r==="wishlist"){
+  showView("wishlist");renderWishlist();
+  updateSeoMeta("My Wishlist | VELORA WATCHES","Review your saved watches from the VELORA WATCHES collection.");
+ }
+ else if(r==="checkout"){
+  co={mode:"cart",id:0,qty:1};showView("checkout");renderCheckout();
+  updateSeoMeta("Checkout | VELORA WATCHES","Review your selected watches and contact the seller to confirm your order.");
+ }
+ else if(r==="buy"){
+  co={mode:"buy",id:+a,qty:clampQ(b)};showView("checkout");renderCheckout();
+  const p=byId.get(+a);
+  updateSeoMeta("Order request | VELORA WATCHES",p?`Prepare an order request for ${p.name}. Confirm availability, payment and delivery with the seller.`:"Prepare your VELORA WATCHES order request.");
+ }
+ else{
+  showView("home");updateSeoMeta("VELORA WATCHES | Timeless Luxury",HOME_SEO_DESCRIPTION);
+  anchor={shop:"shop",story:"story",support:"support"}[r]||null;
+ }
  syncWish();
  requestAnimationFrame(()=>{if(back&&scrollMap[key]!=null)scrollTo({top:scrollMap[key],behavior:"instant"});else if(anchor){const el=$("#"+anchor);el&&scrollTo({top:el.getBoundingClientRect().top+scrollY-100,behavior:"smooth"})}else scrollTo({top:0,behavior:"instant"});setTimeout(()=>restoring=false,500)})}
 function goBack(){let i=-1;for(let k=trail.length-2;k>=0;k--)if(HOME_KEYS.includes(trail[k])){i=k;break}
@@ -416,4 +463,4 @@ $("#featRail").innerHTML=featured().map(card).join("");
 renderRecent();renderCatalog();$("#cc").textContent=cartCount();$("#wc").textContent=wish.length;route();
 </script>
 </body>
-                                                                 </html>
+</html>
