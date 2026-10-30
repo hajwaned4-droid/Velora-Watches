@@ -1,0 +1,36 @@
+VELORA WATCHES — Daily Update 2026-10-30
+
+Files to upload to the repository ROOT:
+- index.html — complete website; existing products and shopping flows preserved.
+- velora-logo.jpg — exact logo extracted from the existing HTML so it is loaded once instead of embedded three times.
+- robots.txt — sitemap reference uses the current /Velora-Watches/ URL.
+- sitemap.xml — homepage URL uses the current /Velora-Watches/ URL.
+
+Changes today:
+1. Performance: externalized the exact existing logo from three repeated Base64 copies into one shared root file. No logo redesign or recompression was performed.
+2. Performance: added a preload hint for the shared logo; set dimensions and async decoding on logo images to help layout stability.
+3. Product detail: prioritized the primary product image and added async decoding/lazy loading to gallery thumbnails.
+4. Social sharing: added Open Graph and Twitter image metadata using the existing logo.
+5. SPA metadata: stopped adding the hash fragment to og:url, which is not a distinct server-side page URL.
+6. Kept the black-and-gold design, current motion effects, mobile overflow safeguards, cart, wishlist, filters, product details, order flow, and WhatsApp number.
+7. Retained the corrected canonical and structured-data URL, robots.txt, and sitemap URL from the previous update because the live repository still had the old /Velvora-Watche/ path at the time of review.
+
+File-size check:
+- Previous index.html: 524,249 bytes.
+- Updated index.html: 95,620 bytes.
+- Exact logo file: 107,357 bytes.
+- Raw HTML reduction: 81.8% (actual network savings depend on compression/cache).
+
+Validation performed:
+- Product JSON record count and key data compared before/after.
+- JavaScript syntax check with Node.js.
+- HTML parsing and duplicate-ID scan.
+- JSON-LD parsing, canonical/OG/sitemap URL consistency checks.
+- Confirmed there are no remaining embedded Base64 JPEG logo copies.
+
+Not performed:
+- Live GitHub Pages deployment, real-device visual testing, network throttling test, or Google Search Console inspection.
+- Individual product URLs are still hash-routed (#/product/ID). Google generally does not treat fragments as separate indexable pages; creating static product landing pages or changing to crawlable path URLs should be a separate, carefully tested update.
+
+Important upload note:
+Upload all four files above to the repository root. Do NOT delete watch-001.jpg through watch-133.jpg or googlec9f18410d3c18c96.html. The logo is now a separate required file named velora-logo.jpg.
