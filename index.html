@@ -225,6 +225,22 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
   .ca button{letter-spacing:0;font-size:8px}
 }
 
+
+/* ===== DAILY UPDATE 2026-10-31: compare watches feature ===== */
+.compare-toggle{position:absolute;top:8px;left:8px;z-index:3;width:40px;height:40px;border-radius:50%;border:1px solid rgba(214,179,106,.65);background:rgba(8,8,8,.82);color:var(--gold2);font-size:20px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);transition:transform .2s ease,background .2s ease,border-color .2s ease}
+.compare-toggle:hover{transform:scale(1.06);background:#211b10}.compare-toggle.on{background:var(--gold);color:#111;border-color:var(--gold2);font-weight:800}
+.compare-detail{border-color:rgba(214,179,106,.55);color:var(--gold2)}.compare-detail.on{background:rgba(214,179,106,.14);border-color:var(--gold2)}
+.compare-tray{position:fixed;left:16px;bottom:16px;z-index:36;display:flex;align-items:center;gap:16px;padding:12px 14px;max-width:min(560px,calc(100vw - 92px));background:rgba(14,14,14,.96);border:1px solid var(--gold);border-radius:14px;box-shadow:0 16px 42px rgba(0,0,0,.45),0 0 24px rgba(214,179,106,.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.compare-tray-copy{display:grid;gap:3px;min-width:0}.compare-tray-copy strong{font-size:13px;color:var(--gold2);white-space:nowrap}.compare-tray-copy small{font-size:10px;color:#aaa;line-height:1.3}.compare-actions{display:flex;align-items:center;gap:7px;flex:none}.compare-tray .btn{min-height:38px;padding:9px 12px;font-size:10px;white-space:nowrap}.compare-tray .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.compare-modal{width:min(980px,100%)}.compare-modal .modal-head{align-items:flex-start}.compare-modal .modal-head>div{min-width:0}.compare-modal .modal-head .hint{margin:6px 0 0}.compare-scroll{width:100%;overflow-x:auto;overscroll-behavior-x:contain;margin-top:16px;border:1px solid rgba(214,179,106,.16);border-radius:12px}.compare-table{width:100%;min-width:620px;border-collapse:collapse;table-layout:fixed;font-size:12px}.compare-table th,.compare-table td{padding:12px 10px;border-bottom:1px solid #282828;vertical-align:middle}.compare-table thead th{background:#17140f;color:var(--gold2);text-align:center}.compare-table thead th:first-child{width:112px;text-align:left}.compare-table tbody th{color:#aaa;text-align:left;font-weight:700;background:rgba(255,255,255,.018)}.compare-table td{text-align:center;color:#e6e0d4;line-height:1.55;overflow-wrap:anywhere}.compare-item-head{display:grid;justify-items:center;gap:7px}.compare-item-head img{width:100%;height:112px;object-fit:contain;background:radial-gradient(circle,#292319,#101010 68%);border-radius:9px}.compare-item-head strong{font:16px/1.3 var(--serif);color:#fff}.compare-item-head small{font-size:10px;color:#999;letter-spacing:.8px}.compare-table .compare-desc{min-width:160px;text-align:left;color:#aaa}.compare-row-actions{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}.compare-row-actions .btn{min-height:36px;padding:8px 10px;font-size:9px}.compare-empty{padding:30px 10px;text-align:center;color:#aaa}.compare-empty strong{display:block;color:var(--gold2);font:22px var(--serif);margin-bottom:8px}
+@media(max-width:820px){
+ .compare-tray{left:10px;right:76px;bottom:calc(78px + env(safe-area-inset-bottom));max-width:none;gap:8px;padding:10px}
+ .compare-tray-copy strong{font-size:12px}.compare-tray-copy small{font-size:9px}.compare-actions{gap:5px}.compare-tray .btn{padding:8px 9px;min-height:36px;font-size:9px;letter-spacing:.2px}
+ .compare-modal{padding:16px}.compare-table{min-width:590px}.compare-item-head img{height:94px}
+}
+@media(max-width:360px){.compare-tray{right:72px;left:8px;padding:8px;gap:6px}.compare-tray-copy small{max-width:100px}.compare-tray .btn{padding:7px 8px;font-size:8px}}
+@media(prefers-reduced-motion:reduce){.compare-toggle{transition:none!important}}
+
 </style>
 </head>
 <body data-view="home">
@@ -297,6 +313,8 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 <div><nav aria-label="Footer"><a href="#/">Home</a><a href="#/shop">Shop</a><a href="#/wishlist">Wishlist</a><a href="#/story">Our Story</a><a href="#/support">Support</a></nav><div style="margin-top:14px">© <span id="year"></span> Velora Watches. All rights reserved.</div></div></footer>
 
 <div class="overlay" id="cartOverlay" role="dialog" aria-modal="true" aria-labelledby="cartTitle"><div class="modal"><div class="modal-head"><h2 id="cartTitle">Your Shopping Cart</h2><button class="close" data-act="closecart" aria-label="Close cart">✕</button></div><div id="cartBody"></div></div></div>
+<div class="overlay" id="compareOverlay" role="dialog" aria-modal="true" aria-labelledby="compareTitle"><div class="modal compare-modal"><div class="modal-head"><div><h2 id="compareTitle">Compare Watches</h2><p class="hint">Compare up to 3 selected watches side by side.</p></div><button class="close" data-act="closecompare" aria-label="Close comparison">✕ CLOSE</button></div><div id="compareBody"></div></div></div>
+<div class="compare-tray" id="compareTray" hidden><div class="compare-tray-copy"><strong id="compareStatus">0 of 3 selected</strong><small id="compareHelp">Select at least 2 watches to compare.</small></div><div class="compare-actions"><button class="btn gold" id="compareNow" type="button" data-act="opencompare" disabled>COMPARE</button><button class="btn" type="button" data-act="clearcompare">CLEAR</button></div></div>
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged product image"><div class="lb-bar"><span class="hint">Tap the image to zoom in or out</span><button class="close" data-act="closelb" aria-label="Close enlarged image">✕ CLOSE</button></div><div class="lb-stage" id="lbStage"><img id="lbImg" alt=""></div></div>
 <a class="fab wafab" id="waFab" href="#" target="_blank" rel="noopener" aria-label="Chat with Velora Watches on WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.800 14.200c-.2.700-1.400 1.300-1.900 1.400-.5.100-1.100.1-1.800-.1-.4-.1-1-.3-1.700-.6-3-1.300-4.900-4.300-5-4.500-.1-.2-1.200-1.600-1.200-3s.8-2.100 1-2.400c.3-.3.600-.3.800-.3h.6c.2 0 .4 0 .6.500l.8 2c.1.200.1.400 0 .6l-.4.600-.5.600c-.1.200-.3.400-.1.700.2.300.8 1.300 1.700 2.100 1.200 1 2.100 1.400 2.400 1.500.3.100.5.100.7-.1l1-1.200c.2-.3.400-.2.700-.1l1.900.9c.3.100.5.200.5.400.1.100.1.700-.1 1.300z"/></svg></a>
 <button class="fab totop" id="toTop" aria-label="Back to top">↑</button>
@@ -320,6 +338,7 @@ const save=(k,v)=>{try{localStorage.setItem(STORE+k,JSON.stringify(v))}catch(e){
 let cart=[],seen={};load("cart",[]).forEach(x=>{if(x&&byId.has(x.id)&&!seen[x.id]){seen[x.id]=1;cart.push({id:x.id,qty:clampQ(x.qty)})}});
 let wish=[...new Set(load("wish",[]).filter(id=>byId.has(id)))];
 let recent=[...new Set(load("recent",[]).filter(id=>byId.has(id)))].slice(0,8);
+let compareIds=[...new Set(load("compare",[]).map(Number).filter(id=>byId.has(id)))].slice(0,3);
 const cats=[...new Set(productsData.map(p=>p.category))];
 const hasCats=cats.length>1;
 const hasPrice=p=>Number(p.price)>0;
@@ -330,7 +349,7 @@ let tT;function notify(m){const t=$("#toast");t.textContent=m;t.classList.add("s
 function imgTag(p,cls){return `<img src="${esc(p.image)}" alt="${esc(p.name)}" ${cls||""} loading="lazy" decoding="async" onload="this.classList.add('ld')" onerror="imgFail(this)">`}
 function imgFail(i){i.style.display="none";const b=i.closest(".pimg,.main-img");if(b)b.classList.add("fail")}
 /* ============ Cards ============ */
-function card(p){const w=wish.includes(p.id);return `<article class="card" data-open="${p.id}"><div class="pimg"><a href="#/product/${p.id}" aria-label="View details: ${esc(p.name)}">${imgTag(p)}</a><button class="heart ${w?"on":""}" data-act="wish" data-id="${p.id}" aria-pressed="${w}" aria-label="${w?"Remove from":"Add to"} wishlist: ${esc(p.name)}">${w?"♥":"♡"}</button></div><div class="cb"><div class="pid">PRODUCT ID: ${pid(p)}</div><h3><a href="#/product/${p.id}">${esc(p.name)}</a></h3><div class="price-row">${priceHtml(p)}</div><div class="ca"><button class="add" data-act="add" data-id="${p.id}" aria-label="Add ${esc(p.name)} to cart">ADD TO CART</button><button class="buy" data-act="buy" data-id="${p.id}" aria-label="Buy ${esc(p.name)} now">BUY NOW</button></div></div></article>`}
+function card(p){const w=wish.includes(p.id),c=compareIds.includes(p.id);return `<article class="card" data-open="${p.id}"><div class="pimg"><a href="#/product/${p.id}" aria-label="View details: ${esc(p.name)}">${imgTag(p)}</a><button class="compare-toggle ${c?"on":""}" data-act="compare" data-id="${p.id}" aria-pressed="${c}" aria-label="${c?"Remove":"Add"} ${esc(p.name)} ${c?"from":"to"} comparison" title="Compare watch">${c?"✓":"⇄"}</button><button class="heart ${w?"on":""}" data-act="wish" data-id="${p.id}" aria-pressed="${w}" aria-label="${w?"Remove from":"Add to"} wishlist: ${esc(p.name)}">${w?"♥":"♡"}</button></div><div class="cb"><div class="pid">PRODUCT ID: ${pid(p)}</div><h3><a href="#/product/${p.id}">${esc(p.name)}</a></h3><div class="price-row">${priceHtml(p)}</div><div class="ca"><button class="add" data-act="add" data-id="${p.id}" aria-label="Add ${esc(p.name)} to cart">ADD TO CART</button><button class="buy" data-act="buy" data-id="${p.id}" aria-label="Buy ${esc(p.name)} now">BUY NOW</button></div></div></article>`}
 /* ============ Persistence & badges ============ */
 function saveCart(){save("cart",cart);cartChanged()}
 function saveWish(){save("wish",wish);syncWish()}
@@ -339,6 +358,32 @@ function lineAmt(x){const p=byId.get(x.id);return hasPrice(p)?p.price*x.qty:0}
 function cartTotal(items){return items.reduce((s,x)=>s+lineAmt(x),0)}
 function cartChanged(){$("#cc").textContent=cartCount();if($("#cartOverlay").classList.contains("show"))renderCart();if(curView==="checkout"&&co.mode==="cart")cart.length?renderSummary():renderCheckout()}
 function syncWish(){$("#wc").textContent=wish.length;$$('[data-act="wish"]').forEach(b=>{const on=wish.includes(+b.dataset.id),p=byId.get(+b.dataset.id);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);const hi=b.querySelector(".hi"),lb=b.querySelector(".lbl");if(hi){hi.textContent=on?"♥":"♡";lb.textContent=on?"In Wishlist":"Add to Wishlist"}else{b.textContent=on?"♥":"♡";b.setAttribute("aria-label",(on?"Remove from":"Add to")+" wishlist: "+p.name)}});if(curView==="wishlist")renderWishlist()}
+function saveCompare(){save("compare",compareIds);syncCompare()}
+function syncCompare(){
+ const tray=$("#compareTray"),count=compareIds.length;
+ if(tray){tray.hidden=count===0;$("#compareStatus").textContent=count+" of 3 selected";$("#compareHelp").textContent=count<2?"Select at least 2 watches to compare.":"Your watches are ready to compare.";$("#compareNow").disabled=count<2}
+ $$('[data-act="compare"]').forEach(b=>{const id=Number(b.dataset.id),on=compareIds.includes(id);b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on));if(b.classList.contains("compare-toggle")){b.textContent=on?"✓":"⇄";const p=byId.get(id);if(p)b.setAttribute("aria-label",(on?"Remove ":"Add ")+p.name+(on?" from":" to")+" comparison")}else{const label=b.querySelector(".compare-label");if(label)label.textContent=on?"Added to Compare":"Compare Watch"}});
+ if($("#compareOverlay")?.classList.contains("show"))renderCompare();
+}
+function toggleCompare(id){if(!byId.has(id))return;if(compareIds.includes(id)){compareIds=compareIds.filter(x=>x!==id);notify("Removed from comparison")}else{if(compareIds.length>=3){notify("Compare up to 3 watches at a time");return}compareIds.push(id);notify("Added to comparison")}saveCompare()}
+function removeCompare(id){compareIds=compareIds.filter(x=>x!==id);saveCompare();notify("Watch removed from comparison")}
+function clearCompare(){compareIds=[];saveCompare();closeCompare();notify("Comparison cleared")}
+function renderCompare(){
+ const body=$("#compareBody"),items=compareIds.map(id=>byId.get(id)).filter(Boolean);
+ if(!body)return;
+ if(!items.length){body.innerHTML='<div class="compare-empty"><strong>No watches selected</strong><p>Add watches using the ⇄ button on product cards.</p></div>';return}
+ const rows=[
+  ["Product ID",p=>pid(p)],
+  ["Price",p=>hasPrice(p)?money(p.price):"Ask for price"],
+  ["Description",p=>p.desc||"No description provided"],
+  ["Category",p=>p.category&&p.category!=="All"?p.category:"Not specified"],
+  ["Availability",p=>"Confirm with the seller on WhatsApp"]
+ ];
+ body.innerHTML=`<div class="compare-scroll"><table class="compare-table"><thead><tr><th scope="col">DETAIL</th>${items.map(p=>`<th scope="col"><div class="compare-item-head"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" decoding="async" onerror="this.style.opacity='.25'"><strong>${esc(p.name)}</strong><small>VELORA WATCHES</small></div></th>`).join("")}</tr></thead><tbody>${rows.map(([label,fn])=>`<tr><th scope="row">${label}</th>${items.map(p=>`<td class="${label==="Description"?"compare-desc":""}">${esc(fn(p))}</td>`).join("")}</tr>`).join("")}<tr><th scope="row">ACTIONS</th>${items.map(p=>`<td><div class="compare-row-actions"><a class="btn gold" href="#/product/${p.id}" data-act="viewcompare">VIEW</a><button class="btn" type="button" data-act="removecompare" data-id="${p.id}">REMOVE</button></div></td>`).join("")}</tr></tbody></table></div><p class="hint" style="margin:10px 2px 0">Only the product information listed on this website is compared. Confirm exact model, availability, payment and delivery with the seller.</p>`;
+}
+function openCompare(){if(compareIds.length<2){notify("Select at least 2 watches to compare");return}renderCompare();$("#compareOverlay").classList.add("show");setTimeout(()=>$("#compareOverlay .close").focus(),30)}
+function closeCompare(){$("#compareOverlay").classList.remove("show")}
+
 /* ============ Cart / wishlist actions ============ */
 function addToCart(id,q=1,quiet){const it=cart.find(x=>x.id===id);if(it){if(it.qty+q>MAXQ){it.qty=MAXQ;notify("Maximum "+MAXQ+" per watch in one order")}else{it.qty+=q;quiet||notify("Added to your cart!")}}else{cart.push({id,qty:clampQ(q)});quiet||notify("Added to your cart!")}saveCart()}
 function removeItem(id){const p=byId.get(id);if(confirm("Remove "+p.name+" from your cart?")){cart=cart.filter(x=>x.id!==id);saveCart();notify("Removed from cart")}}
@@ -406,7 +451,7 @@ function renderProduct(id){const v=$("#v-product"),p=byId.get(id);
  <div class="note"><b>Please note:</b> the brand or label visible in the photo is not verified by this website. Please confirm the exact model, availability, payment and delivery with the seller on WhatsApp before you buy.</div>
  <table class="table"><tr><th>Product ID / SKU</th><td>${pid(p)}</td></tr><tr><th>Name</th><td>${esc(p.name)}</td></tr><tr><th>Price</th><td>${hasPrice(p)?money(p.price):"Ask for price"}</td></tr>${hasCats&&p.category!=="All"?`<tr><th>Category</th><td>${esc(p.category)}</td></tr>`:""}<tr><th>Availability</th><td>Confirm with the seller on WhatsApp</td></tr></table>
  <div class="qrow"><b style="font-size:12px;letter-spacing:1.5px;color:#aaa">QUANTITY</b><div class="qty"><button data-act="pqm" aria-label="Decrease quantity">−</button><input id="pq" value="1" inputmode="numeric" aria-label="Quantity" maxlength="2"><button data-act="pqp" aria-label="Increase quantity">+</button></div></div>
- <div class="pbtns"><button class="btn gold inl-main" data-act="padd" data-id="${id}">ADD TO CART</button><button class="btn inl-main" data-act="pbuy" data-id="${id}">BUY NOW</button><button class="btn wbtn ${w?"on":""}" data-act="wish" data-id="${id}" aria-pressed="${w}"><span class="hi">${w?"♥":"♡"}</span> <span class="lbl">${w?"In Wishlist":"Add to Wishlist"}</span></button><button class="btn" data-act="share" data-id="${id}">⇪ SHARE PRODUCT</button><button class="btn wa full" data-act="pwa" data-id="${id}">ORDER / ASK ON WHATSAPP</button></div></div></div>
+ <div class="pbtns"><button class="btn gold inl-main" data-act="padd" data-id="${id}">ADD TO CART</button><button class="btn inl-main" data-act="pbuy" data-id="${id}">BUY NOW</button><button class="btn wbtn ${w?"on":""}" data-act="wish" data-id="${id}" aria-pressed="${w}"><span class="hi">${w?"♥":"♡"}</span> <span class="lbl">${w?"In Wishlist":"Add to Wishlist"}</span></button><button class="btn" data-act="share" data-id="${id}">⇪ SHARE PRODUCT</button><button class="btn compare-detail ${compareIds.includes(id)?"on":""}" data-act="compare" data-id="${id}" aria-pressed="${compareIds.includes(id)}"><span class="compare-label">${compareIds.includes(id)?"Added to Compare":"Compare Watch"}</span></button><button class="btn wa full" data-act="pwa" data-id="${id}">ORDER / ASK ON WHATSAPP</button></div></div></div>
  <section style="margin-top:50px"><div class="eyebrow">YOU MAY ALSO LIKE</div><h2 class="h2">Related Watches</h2><div class="rail">${related(p).map(card).join("")}</div></section>
  ${rec.length?`<section style="margin-top:34px"><h2 class="h2">Recently Viewed</h2><div class="rail">${rec.map(card).join("")}</div></section>`:""}</div>
  <div class="sticky"><span class="sp">${hasPrice(p)?money(p.price):"Ask"}</span><button class="btn" data-act="padd" data-id="${id}">ADD TO CART</button><button class="btn gold" data-act="pbuy" data-id="${id}">BUY NOW</button></div>`;
@@ -468,7 +513,7 @@ function updateSeoMeta(title, description){
 const HOME_SEO_DESCRIPTION="Explore the VELORA WATCHES collection, compare watch styles and prices, save favourites, and ask about availability or ordering through WhatsApp.";
 function route(){const raw=location.hash||"#/",[r,a,b]=raw.replace(/^#\/?/,"").split("/");let key=raw==="#"?"#/":raw;
  let back=false;const ix=trail.lastIndexOf(key);if(ix>=0&&ix<trail.length-1){trail.length=ix+1;back=true}else if(trail[trail.length-1]!==key){trail.push(key);if(trail.length>60)trail.shift()}
- restoring=true;curKey=key;closeCart();closeLb();
+ restoring=true;curKey=key;closeCart();closeLb();closeCompare();
  let anchor=null;
  if(r==="product"){
   showView("product");renderProduct(+a);
@@ -505,7 +550,7 @@ document.addEventListener("click",e=>{
  if(a){const id=+a.dataset.id,act=a.dataset.act;if(a.tagName==="A"&&act==="closecart"){closeCart();return}
   if(act!=="thumb"&&act!=="zoom")e.preventDefault();
   switch(act){
-  case"wish":toggleWish(id);break;case"add":addToCart(id);break;case"buy":location.hash="#/buy/"+id+"/1";break;
+  case"wish":toggleWish(id);break;case"compare":toggleCompare(id);break;case"opencompare":openCompare();break;case"closecompare":closeCompare();break;case"clearcompare":clearCompare();break;case"removecompare":removeCompare(id);break;case"viewcompare":closeCompare();location.hash="#/product/"+id;break;case"add":addToCart(id);break;case"buy":location.hash="#/buy/"+id+"/1";break;
   case"padd":addToCart(id,pq);break;case"pbuy":location.hash="#/buy/"+id+"/"+pq;break;
   case"pqm":setPq(pq-1);break;case"pqp":setPq(pq+1);break;case"coqm":setQty(co.qty-1);break;case"coqp":setQty(co.qty+1);break;
   case"share":shareProduct(byId.get(id));break;
@@ -520,9 +565,9 @@ document.addEventListener("click",e=>{
   case"band":{const on=a.classList.contains("active");F.min=on?"":a.dataset.lo;F.max=on?"":(+a.dataset.hi===1e9?"":a.dataset.hi);$("#minP").value=F.min;$("#maxP").value=F.max;renderCatalog();break}}
   return}
  const c=e.target.closest("[data-open]");if(c&&!e.target.closest("a,button,input,select"))location.hash="#/product/"+c.dataset.open;
- if(e.target.id==="cartOverlay")closeCart();
+ if(e.target.id==="cartOverlay")closeCart();if(e.target.id==="compareOverlay")closeCompare();
 });
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeLb();closeCart()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeLb();closeCart();closeCompare()}});
 $("#lbStage").addEventListener("click",()=>$("#lbStage").classList.toggle("z"));
 $("#menuBtn").addEventListener("click",()=>{const o=$("#navlinks").classList.toggle("open");$("#menuBtn").setAttribute("aria-expanded",o)});
 $("#navlinks").addEventListener("click",()=>$("#navlinks").classList.remove("open"));
@@ -534,13 +579,13 @@ $("#moreBtn").addEventListener("click",()=>{const from=F.shown;F.shown+=PAGE;$("
 $("#clearRecent").addEventListener("click",()=>{recent=[];save("recent",recent);renderRecent()});
 $("#toTop").addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
 $("#contactForm").addEventListener("submit",e=>{e.preventDefault();const v=i=>$("#"+i).value.trim();sendWA(`Hello Velora Watches!\nEnquiry from: ${v("contactName")}\nPhone: ${v("contactPhone")}\nEmail: ${v("contactEmail")||"Not provided"}\nMessage: ${v("contactMessage")}`)});
-addEventListener("storage",e=>{if(!e.key||!e.key.startsWith(STORE))return;cart=cart.filter(x=>0);load("cart",[]).forEach(x=>{if(x&&byId.has(x.id))cart.push({id:x.id,qty:clampQ(x.qty)})});wish=load("wish",[]).filter(id=>byId.has(id));recent=load("recent",[]).filter(id=>byId.has(id));$("#cc").textContent=cartCount();syncWish();renderRecent();renderCatalog(false)});
+addEventListener("storage",e=>{if(!e.key||!e.key.startsWith(STORE))return;cart=cart.filter(x=>0);load("cart",[]).forEach(x=>{if(x&&byId.has(x.id))cart.push({id:x.id,qty:clampQ(x.qty)})});wish=load("wish",[]).filter(id=>byId.has(id));recent=load("recent",[]).filter(id=>byId.has(id));compareIds=[...new Set(load("compare",[]).map(Number).filter(id=>byId.has(id)))].slice(0,3);$("#cc").textContent=cartCount();syncWish();syncCompare();renderRecent();renderCatalog(false)});
 /* ============ Init ============ */
 $("#year").textContent=new Date().getFullYear();
 if(STORE_EMAIL&&!/example\.com/.test(STORE_EMAIL)){$("#emailText").textContent=STORE_EMAIL;$("#emailRow").hidden=false}
 $("#waFab").href=waLink("Hello Velora Watches! I have a question about your watches.");
 $("#featRail").innerHTML=featured().map(card).join("");
-renderRecent();renderCatalog();$("#cc").textContent=cartCount();$("#wc").textContent=wish.length;route();
+renderRecent();renderCatalog();$("#cc").textContent=cartCount();$("#wc").textContent=wish.length;syncCompare();route();
 </script>
 </body>
-</html>
+                               </html>
